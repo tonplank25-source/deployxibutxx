@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<!-- Mirrored from deployrianmodss.vercel.app/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 07 Apr 2026 15:43:35 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+  <meta charset="UTF-8">
+  <title>RianModss Deploy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <!-- Tambahkan JSZip untuk ekstrak file ZIP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    /* Bubble animation elements */
+    .bubble {
+      position: fixed;
+      background: rgba(96, 165, 250, 0.1);
+      border-radius: 50%;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Ocean Bubbles -->
+  <div class="bubble" style="width: 40px; height: 40px; top: 10%; left: 10%;"></div>
+  <div class="bubble" style="width: 25px; height: 25px; top: 60%; left: 85%;"></div>
+  <div class="bubble" style="width: 30px; height: 30px; top: 80%; left: 15%;"></div>
+  
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+  
+  <!-- Sidebar Menu -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">🌊 Menu</div>
+      <div class="close-btn" onclick="toggleMenu()">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+    </div>
+    
+    <div class="sidebar-section">
+      <div class="section-title">
+        <i class="fa-solid fa-history"></i> Riwayat Deploy
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="empty-msg">Belum ada riwayat</div>
+      </div>
+      <button class="btn-clear" onclick="clearHistory()">
+        <i class="fa-solid fa-trash"></i> Hapus Riwayat
+      </button>
+    </div>
+    
+    <div class="sidebar-section">
+      <div class="section-title">
+        <i class="fa-solid fa-users"></i> Komunitas
+      </div>
+      <a href="https://www.tiktok.com/@xibutxx" target="_blank" class="comm-link">
+        <i class="fa-brands fa-tiktok"></i> TikTok (@xibutxx)
+      </a>
+      <a href="https://whatsapp.com/channel/0029Vb6AWfM5q08dFnngi21F" target="_blank" class="comm-link">
+        <i class="fa-brands fa-whatsapp"></i> WhatsApp Channel
+      </a>
+    </div>
+  </div>
+
+  <!-- Dynamic Island Notification -->
+  <div class="dynamic-island-container">
+    <div id="dynamicIsland" class="dynamic-island" onclick="openResultUrl()">
+      <div class="island-content">
+        <div class="island-icon-box">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <div class="island-text">
+          <span class="island-title">Deploy Berhasil! 🌊</span>
+          <span class="island-desc" id="islandUrlDisplay">Waiting...</span>
+        </div>
+        <div class="island-action">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Card -->
+  <div class="card-wrapper">
+    <div class="main-card">
+      <!-- Menu Button -->
+      <div class="menu-btn" onclick="toggleMenu()">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+
+      <!-- Video Banner -->
+      <div class="banner-video">
+        <video id="bannerVideo" autoplay muted loop playsinline>
+          <!-- Ganti video dengan tema laut -->
+          <source src="https://files.catbox.moe/qbytqg.mp4" type="video/mp4">
+        </video>
+        <div class="sound-toggle" id="soundBtn" onclick="toggleSound()">
+          <i class="fa-solid fa-volume-xmark"></i>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div class="header">
+        <h2><i class="fa-solid fa-anchor"></i> XibutXx </h2>
+        <p>Deploy website statis dengan tema laut. Dukung file HTML & ZIP.</p>
+      </div>
+
+      <!-- Form -->
+      <form id="deployForm">
+        <div class="input-group">
+          <div class="input-box">
+            <i class="fa-solid fa-globe"></i>
+            <input type="text" id="siteName" placeholder="Nama subdomain (contoh: website-saya)" required autocomplete="off">
+          </div>
+          <div class="input-box">
+            <i class="fa-solid fa-file-archive"></i>
+            <input type="file" id="htmlFile" accept=".html,.zip" required>
+            <label for="htmlFile" class="file-label">Pilih file HTML atau ZIP</label>
+          </div>
+        </div>
+
+        <!-- Quick Tips -->
+        <div class="tips-box">
+          <div class="tip">
+            <i class="fa-solid fa-water"></i>
+            <span>Dukung file HTML tunggal atau ZIP berisi website lengkap</span>
+          </div>
+          <div class="tip">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Deploy langsung ke Vercel</span>
+          </div>
+          <div class="tip">
+            <i class="fa-solid fa-file-zipper"></i>
+            <span>File ZIP harus mengandung index.html di root</span>
+          </div>
+        </div>
+
+        <!-- Deploy Button -->
+        <button type="submit" class="btn-deploy" id="deployBtn">
+          <i class="fa-solid fa-ship"></i> DEPLOY SEKARANG
+        </button>
+
+        <!-- Deploy Info -->
+        <div id="deployInfoBox" class="deploy-info-box">
+          <div class="info-header">
+            <i class="fa-solid fa-receipt"></i> Detail Deploy
+          </div>
+          <div class="info-row">
+            <span class="info-label">Website</span>
+            <a href="#" target="_blank" class="info-value highlight" id="resName">-</a>
+          </div>
+          <div class="info-row">
+            <span class="info-label">File</span>
+            <span class="info-value" id="resFile">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Waktu</span>
+            <span class="info-value" id="resDate">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Status</span>
+            <span class="info-status success">
+              <i class="fa-solid fa-check-circle"></i> Berhasil
+            </span>
+          </div>
+        </div>
+      </form>
+
+      <!-- Footer -->
+      <div class="footer">
+        <i class="fa-solid fa-shield-halved"></i> Ocean Theme V2.0 • Powered by XibutXx
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Bubble animation
+    document.addEventListener('DOMContentLoaded', function() {
+      const bubbles = document.querySelectorAll('.bubble');
+      
+      bubbles.forEach((bubble, index) => {
+        const duration = 15 + index * 3;
+        const delay = index * 2;
+        
+        bubble.style.animation = `float ${duration}s infinite ${delay}s linear`;
+      });
+    });
+  </script>
+</body>
+
+<!-- Mirrored from deployrianmodss.vercel.app/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 07 Apr 2026 15:43:37 GMT -->
+</html>
